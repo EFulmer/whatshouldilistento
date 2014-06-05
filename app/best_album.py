@@ -25,7 +25,8 @@ def get_artist_page(artist_name):
     # in the long term future I'd like to handle artist names more 
     # intelligently, i.e. distinguish between "Kurt Vile" and 
     # "Kurt Vile & The Violators"
-    return requests.get( RYM_BASE + rymify_name(artist_name) )
+    # this is a bit too involved to mark with a to-do though
+    return requests.get( RYM_BASE + artist_name )
 
 
 def tree_from_page(artist_page):
@@ -35,25 +36,40 @@ def tree_from_page(artist_page):
     return html.fromstring(artist_page.text)
 
 
-def get_albums(html_tree):
+def get_album_titles(html_tree):
     """
-    Return each album from the artist, given an lxml HtmlTree.
+    Return a list containing the titles of all the artist's 
+    studio albums, given an lxml HtmlTree.
     """
-    # '//div[@id="disco_type_s"]//div[@class="disco_mainline"]'
-    # '//div[@id="disco_type_s"]//div[@class="disco_avg_rating"]/text'
-    # return html_tree.xpath('//div[@id="disco_type_s"]')
     title_xpath = ROOT_ALBUM_XPATH + '//a[@class="album"]/text()'
-    rating_xpath = ROOT_ALBUM_XPATH + '//div[@class="disco_avg_rating"]/text()'
     titles = html_tree.xpath(title_xpath)
+    return titles
+
+
+def get_album_ratings(html_tree):
+    """
+    Return a list containing the ratings for each of the artist's 
+    studio albums, given an lxml HtmlTree.
+    """
+    rating_xpath = ROOT_ALBUM_XPATH + '//div[@class="disco_avg_rating"]/text()'
     ratings = html_tree.xpath(rating_xpath)
-    # return html_tree.xpath('//div[@id="disco_type_s"]//a[@class="album"]/text()')
-    return zip(titles, ratings)
+    return ratings
 
 
-
-def get_best_album(albums):
+def get_best_album(album_info):
     """
+    Given a list of (title, rating) tuples, return the best-rated 
+    album.
     """
-    # TODO
-    # //div[@class="disco_avg_rating"]/text() returns the ratings
-    pass
+    return max(album_info, key=lambda x: x[1])[0]
+
+
+def best_album(artist):
+    rym_name = rymify_name(artist)
+    rym_page = get_artist_page(rym_name)
+    page_src = tree_from_page(rym_page)
+    titles   = get_album_titles(page_src)
+    ratings  = get_album_ratings(page_src)
+    info     = zip(titles, ratings)
+    best     = get_best_album(info)
+    print best
