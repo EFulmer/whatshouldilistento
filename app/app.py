@@ -19,12 +19,15 @@ def hello():
 
 @app.route('/enter_band', methods=['GET', 'POST'])
 def enter_band():
-    if request.method == 'GET':
-        pass
-    elif request.method == 'POST':
+    if request.method == 'POST':
         artist = request.form['artist']
-        recommended = best_album(artist)
-        flash(recommended)
+        try:
+            recommended = best_album(artist)
+            flash('Recommended album for {0}: {1}'.forat(artist, recommended))
+        except Exception:
+            flash("""Looks like {0} isn't listed on Rate Your Music. 
+                    
+                    Nice job namedropping them!""".format(artist))
     return render_template('enter_band.html')
 
 
