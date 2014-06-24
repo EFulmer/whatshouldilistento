@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Band Entry</title>
+    </head>
+    <body>
+        <h1>Band Entry Page</h1>
+        <form action="{{ url_for('enter_band') }}" method=post>
+            {% for message in get_flashed_messages() %}
+                <div>{{ message }}</div>
+            {% endfor %}
+            <dl>
+                <dd><label for="artist">Artist name: </label><input type="text" name="artist" size="50">
+                <dd><input type=submit value=Entry>
+            </dl>
+    </form>
+    </body>
+</html>

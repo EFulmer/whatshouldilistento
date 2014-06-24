@@ -65,6 +65,10 @@ def get_best_album(album_info):
 
 
 def best_album(artist):
+    """
+    Given the name of an artist, returns their best album based on 
+    Rate Your Music user ratings.
+    """
     rym_name = rymify_name(artist)
     rym_page = get_artist_page(rym_name)
     page_src = tree_from_page(rym_page)
@@ -72,4 +76,4 @@ def best_album(artist):
     ratings  = get_album_ratings(page_src)
     info     = zip(titles, ratings)
     best     = get_best_album(info)
-    print best
+    return best
