@@ -1,4 +1,6 @@
-# get_albums.py
+# rym_scraper.py
+
+from collections import namedtuple
 
 import requests
 
@@ -7,6 +9,10 @@ from lxml import html
 
 RYM_BASE = 'http://rateyourmusic.com/artist/'
 ROOT_ALBUM_XPATH = '//div[@id="disco_type_s"]'
+ARTIST_NAME_XPATH = '//h1[@class="artist_name_hdr"]/text()'
+
+RYMInfo = namedtuple('RYMInfo', ['artist_name', 'best_album'])
+
 
 def rymify_name(name):
     """
@@ -77,3 +83,30 @@ def best_album(artist):
     info     = zip(titles, ratings)
     best     = get_best_album(info)
     return best
+
+
+def get_artist_name(html_tree):
+    """
+    Return the artist's name, as displayed on RYM (in other words, 
+    their "proper name").
+
+    html_tree -- lxml HTML tree for the artist's RYM page
+    """
+    return html_tree.xpath(ARTIST_NAME_XPATH)[0]
+
+
+def get_artist_info(artist):
+    """
+    Return a new namedtuple of (artist's name, best album from artist), 
+    given an artist's name.
+    """
+    rym_name = rymify_name(artist)
+    rym_page = get_artist_page(rym_name)
+    page_src = tree_from_page(rym_page)
+    name     = get_artist_name(page_src)
+    titles   = get_album_titles(page_src)
+    ratings  = get_album_ratings(page_src)
+    info     = zip(titles, ratings)
+    best     = get_best_album(info)
+    return RYMInfo(name, best)
+
