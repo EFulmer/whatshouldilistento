@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Band Info</title>
+    </head>
+    <body>
+        <h1>Band Info Page</h1>
+        {% for message in get_flashed_messages() %}
+            <div>{{ message }}</div>
+        {% endfor %}
+    </body>
+</html>

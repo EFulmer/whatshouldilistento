@@ -11,7 +11,7 @@ RYM_BASE = 'http://rateyourmusic.com/artist/'
 ROOT_ALBUM_XPATH = '//div[@id="disco_type_s"]'
 ARTIST_NAME_XPATH = '//h1[@class="artist_name_hdr"]/text()'
 
-RYMInfo = namedtuple('RYMInfo', ['artist_name', 'best_album'])
+RYMInfo = namedtuple('RYMInfo', ['name', 'best_album'])
 
 
 def rymify_name(name):
