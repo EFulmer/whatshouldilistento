@@ -8,6 +8,10 @@ Features
     * Should users be able to get recommendations without having an account?
 * *Information*: Spotify links, official YouTube channel links, etc.
 
+Bug Fixes
+---------
+* Handle Unicode characters in artist and album names.
+
 Front-Endy Stuff
 ----------------
 * Make a less-1995-looking page.
