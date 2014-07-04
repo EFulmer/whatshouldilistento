@@ -6,7 +6,7 @@
     <body>
         <h1>Band Info Page</h1>
         {% for message in get_flashed_messages() %}
-            <div>{{ message }}</div>
+            <div>{{ message.decode('utf-8') }}</div>
         {% endfor %}
     </body>
 </html>

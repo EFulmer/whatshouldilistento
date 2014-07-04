@@ -108,5 +108,5 @@ def get_artist_info(artist):
     ratings  = get_album_ratings(page_src)
     info     = zip(titles, ratings)
     best     = get_best_album(info)
-    return RYMInfo(name, best)
+    return RYMInfo(name.encode('utf8'), best.encode('utf8'))
 
