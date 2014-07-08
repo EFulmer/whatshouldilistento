@@ -23,9 +23,18 @@ def hello():
 @app.route('/enter_band', methods=['GET', 'POST'])
 def enter_band():
     form = ArtistForm()
+
+    # Note to Eric later: form sends a POST request.
+    if request.method == 'GET':
+        return render_template('enter_band.html', form=form) 
+    else:
+        if form.validate_on_submit():
+            return band_info(form.name.data)
+        else:
+            flash('You gotta enter something.')
+            return render_template('enter_band.html', form=form)
+
     
-    # Note to Eric, so he gets what's going on later:
-    # If the form was submitted, AND the data's valid:
     if form.validate_on_submit():
         return band_info(form.name.data)
     else:
