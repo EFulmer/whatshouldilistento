@@ -7,7 +7,7 @@ from flask import render_template
 from flask import request
 
 import config
-from forms import ArtistForm
+from forms import ArtistForm, LoginForm
 import rym_scraper
 
 
@@ -16,6 +16,7 @@ app.config.from_object(config)
 
 
 @app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def hello():
     return render_template('hello.html')
 
@@ -23,17 +24,6 @@ def hello():
 @app.route('/enter_band', methods=['GET', 'POST'])
 def enter_band():
     form = ArtistForm()
-
-    # Note to Eric later: form sends a POST request.
-    if request.method == 'GET':
-        return render_template('enter_band.html', form=form) 
-    else:
-        if form.validate_on_submit():
-            return band_info(form.name.data)
-        else:
-            flash('You gotta enter something.')
-            return render_template('enter_band.html', form=form)
-
     
     if form.validate_on_submit():
         return band_info(form.name.data)
@@ -52,6 +42,20 @@ def band_info(artist):
         flash("Sorry, {0} isn't listed on Rate Your Music.".format(artist))
 
     return render_template('band_info.html')
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        print form.openid.data
+        print form.remember_me.data
+        flash("""TODO: Implement this you dork: 
+                Login for OpenID={}, 
+                remember_me={}""".format(form.openid.data, 
+                    form.remember_me.data))
+        return redirect('/')
+    return render_template('login.html', form=form)
 
 
 if __name__ == '__main__':
