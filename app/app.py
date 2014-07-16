@@ -6,13 +6,17 @@ from flask import redirect
 from flask import render_template
 from flask import request
 
+from flask.ext.sqlalchemy import SQLAlchemy
+
 import config
+# import models
 from forms import ArtistForm, LoginForm
 import rym_scraper
 
 
 app = Flask(__name__)
 app.config.from_object(config)
+db = SQLAlchemy(app)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -50,14 +54,17 @@ def login():
     if form.validate_on_submit():
         print form.openid.data
         print form.remember_me.data
-        flash("""TODO: Implement this you dork: 
-                Login for OpenID={}, 
+        flash("""TODO: Implement this you dork: \n
+                Login for OpenID={}, \n
                 remember_me={}""".format(form.openid.data, 
                     form.remember_me.data))
         return redirect('/')
-    return render_template('login.html', form=form)
+    return render_template('login.html', 
+            form=form,
+            providers=app.config['OPENID_PROVIDERS'])
 
 
 if __name__ == '__main__':
+
     app.run()
 
