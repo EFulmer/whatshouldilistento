@@ -16,3 +16,7 @@ Front-Endy Stuff
 ----------------
 * Make a less-1995-looking page.
 * Somehow use AJAX to get album recs and manage the to-listen list on the fly?
+
+Organization/Logistic Stuff
+---------------------------
+* Create a dedicated `scripts` folder.
