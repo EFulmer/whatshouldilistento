@@ -1,4 +1,4 @@
-# app.py
+# views.py
 
 from flask import flash
 from flask import Flask
@@ -8,15 +8,11 @@ from flask import request
 
 from flask.ext.sqlalchemy import SQLAlchemy
 
+from app import app
 import config
-# import models
+import models
 from forms import ArtistForm, LoginForm
 import rym_scraper
-
-
-app = Flask(__name__)
-app.config.from_object(config)
-db = SQLAlchemy(app)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -62,9 +58,4 @@ def login():
     return render_template('login.html', 
             form=form,
             providers=app.config['OPENID_PROVIDERS'])
-
-
-if __name__ == '__main__':
-
-    app.run()
 
