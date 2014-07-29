@@ -2,13 +2,20 @@
 
 from flask import flash
 from flask import Flask
+from flask import g
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import session
+from flask import url_for
 
 from flask.ext.sqlalchemy import SQLAlchemy
 
 from app import app
+from app import db
+from app import lm
+from app import oid
+
 import config
 import models
 from forms import ArtistForm, LoginForm
@@ -45,17 +52,60 @@ def band_info(artist):
 
 
 @app.route('/login', methods=['GET','POST'])
+@oid.loginhandler # handles logins - duh
 def login():
+    if g.user is not None and g.user.is_authenticated():
+        return redirect(url_for('index'))
+
     form = LoginForm()
     if form.validate_on_submit():
-        print form.openid.data
-        print form.remember_me.data
-        flash("""TODO: Implement this you dork: \n
-                Login for OpenID={}, \n
-                remember_me={}""".format(form.openid.data, 
-                    form.remember_me.data))
-        return redirect('/')
+        session['remember_me'] = form.remember_me.data
+        return oid.try_login(form.openid.data, ask_for=['nickname', 'email'])
+        # print form.openid.data
+        # print form.remember_me.data
+        # flash("""TODO: Implement this you dork: \n
+        #         Login for OpenID={}, \n
+        #         remember_me={}""".format(form.openid.data, 
+        #             form.remember_me.data))
+        # return redirect('/')
     return render_template('login.html', 
             form=form,
             providers=app.config['OPENID_PROVIDERS'])
 
+
+@lm.user_loader
+def user_load(id):
+    return models.User.query.get(int(id))
+
+
+@oid.after_login
+def after_login(resp):
+    if resp.email is None or resp.email == '':
+        flash('Invalid login. Please try again.')
+        return redirect(url_for('login'))
+
+    user = models.User.query.filter_by(email=resp.email).first()
+
+    if user is None:
+        nickname = resp.nickname
+        if nickname is None or nickname == '':
+            nickname = resp.email.split('@')[0]
+        user = models.User(nickname=nickname, email=resp.email) #, 
+                # role=ROLE_USER)
+        db.session.add(user)
+        db.session.commit()
+        remember_me = False
+
+        if 'remember_me' in session:
+            remember_me = session['remember_me']
+            session.pop('remember_me', None)
+
+        login_user(user, remember=remember_me)
+
+        return redirect(request.args.get('next') or url_for('index'))
+
+
+@app.before_request
+def before_request():
+    # current_user global is set by Flask-Login
+    g.user = current_user
