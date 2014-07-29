@@ -9,6 +9,10 @@ from flask import request
 from flask import session
 from flask import url_for
 
+from flask.ext.login import current_user
+from flask.ext.login import login_required
+from flask.ext.login import login_user
+from flask.ext.login import logout_user
 from flask.ext.sqlalchemy import SQLAlchemy
 
 from app import app
@@ -24,7 +28,7 @@ import rym_scraper
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
-def hello():
+def index():
     return render_template('hello.html')
 
 
