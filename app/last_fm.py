@@ -20,7 +20,7 @@ def get_best_album(artist):
                  }
     r = s.get(AS_API_ROOT)
     j = json.loads(r.text)
-    name = j[u'topalbums'][u'album'][u'name']
-    album = j[u'topalbums'][u'album'][u'artist'][u'name']
+    album = j[u'topalbums'][u'album'][u'name']
+    name = j[u'topalbums'][u'album'][u'artist'][u'name']
     return ArtistInfo(name, album)
 

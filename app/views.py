@@ -23,7 +23,7 @@ from app import oid
 import config
 import models
 from forms import ArtistForm, LoginForm
-import rym_scraper
+import last_fm
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -44,13 +44,16 @@ def enter_band():
 
 @app.route('/band_info', methods=['GET', 'POST'])
 def band_info(artist):
-    rym_rec = "{0}'s best album is {1}, according to RateYourMusic."
+    rym_rec = "{0}'s best album is {1}, according to Last.fm."
     try:
-        info = rym_scraper.get_artist_info(artist)
-        flash(rym_rec.format(info.name, info.best_album))
+        # TODO add db query on this.
+        info = last_fm.get_best_album(artist)
+        flash(rym_rec.format(info.artist, info.album))
     except Exception as e:
+        # TODO report when artist-not-found error occured instead of 
+        # some other error
         print e
-        flash("Sorry, {0} isn't listed on Rate Your Music.".format(artist))
+        flash("Sorry, {0} isn't listed on Last.fm.".format(artist))
 
     return render_template('band_info.html')
 
@@ -65,13 +68,6 @@ def login():
     if form.validate_on_submit():
         session['remember_me'] = form.remember_me.data
         return oid.try_login(form.openid.data, ask_for=['nickname', 'email'])
-        # print form.openid.data
-        # print form.remember_me.data
-        # flash("""TODO: Implement this you dork: \n
-        #         Login for OpenID={}, \n
-        #         remember_me={}""".format(form.openid.data, 
-        #             form.remember_me.data))
-        # return redirect('/')
     return render_template('login.html', 
             form=form,
             providers=app.config['OPENID_PROVIDERS'])
@@ -113,3 +109,10 @@ def after_login(resp):
 def before_request():
     # current_user global is set by Flask-Login
     g.user = current_user
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+

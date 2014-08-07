@@ -7,6 +7,7 @@ Features
     * Can possibly expand accounts to try and recommend similar artists -- hook in to Last.fm's similar artists feature?
     * Should users be able to get recommendations without having an account?
 * *Information*: Spotify links, official YouTube channel links, etc.
+    * Check for compilatons?
 
 Bug Fixes
 ---------
