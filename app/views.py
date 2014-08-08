@@ -46,7 +46,6 @@ def enter_band():
 def band_info(artist):
     rym_rec = "{0}'s best album is {1}, according to Last.fm."
     try:
-        # TODO add db query on this.
         info = last_fm.get_best_album(artist)
         flash(rym_rec.format(info.artist, info.album))
 
@@ -56,11 +55,11 @@ def band_info(artist):
                                        id=g.user.id)
             db.session.add(entry)
             db.session.commit()
-    except Exception as e:
-        # TODO report when artist-not-found error occured instead of 
-        # some other error
-        print e
+    except last_fm.ArtistNotFoundException:
         flash("Sorry, {0} isn't listed on Last.fm.".format(artist))
+    except Exception as e:
+        print e
+        flash("Sorry, an error occurred. It'll be fixed soon!")
 
     return render_template('band_info.html')
 
@@ -76,6 +75,7 @@ def my_bands():
 @oid.loginhandler # handles logins - duh
 def login():
     if g.user is not None and g.user.is_authenticated():
+        flash("Hey, you're already logged in!")
         return redirect(url_for('index'))
 
     form = LoginForm()
