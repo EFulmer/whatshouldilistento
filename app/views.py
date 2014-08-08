@@ -49,6 +49,13 @@ def band_info(artist):
         # TODO add db query on this.
         info = last_fm.get_best_album(artist)
         flash(rym_rec.format(info.artist, info.album))
+
+        if g.user is not None:
+            entry = models.ArtistEntry(name=info.artist, 
+                                       album=info.album, 
+                                       id=g.user.id)
+            db.session.add(entry)
+            db.session.commit()
     except Exception as e:
         # TODO report when artist-not-found error occured instead of 
         # some other error
@@ -56,6 +63,13 @@ def band_info(artist):
         flash("Sorry, {0} isn't listed on Last.fm.".format(artist))
 
     return render_template('band_info.html')
+
+
+@app.route('/my_bands', methods=('GET',))
+def my_bands():
+    if g.user is None:
+        flash('Sorry, but you must be logged in to keep a band to-do list.')
+        return render_template('hello.html')
 
 
 @app.route('/login', methods=['GET','POST'])
