@@ -36,7 +36,7 @@ class ArtistEntry(db.Model):
 
     name  = db.Column(db.String(64), primary_key=True)
     album = db.Column(db.String(128))
-    id    = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id    = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
 
     def __repr__(self):
         return 'ArtistEntry(name={}, album={}, id={})'.format(self.name,
