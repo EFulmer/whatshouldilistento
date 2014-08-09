@@ -39,10 +39,11 @@ class ArtistEntry(db.Model):
     """
     __tablename__ = 'ArtistEntry' # could do __tablename__ = __name__ instead
 
-    name  = db.Column(db.String(64), primary_key=True)
-    album = db.Column(db.String(128))
-    id    = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
+    name   = db.Column(db.String(64), primary_key=True)
+    album  = db.Column(db.String(128))
+    id     = db.Column(db.Integer, db.ForeignKey('User.id'), primary_key=True)
+    active = db.Column(db.Boolean)
 
     def __repr__(self):
-        return 'ArtistEntry(name={}, album={}, id={})'.format(self.name,
-                self.album, self.id)
+        return 'ArtistEntry(name={}, album={}, id={}, active={})'.format(
+                self.name, self.album, self.id, self.active)

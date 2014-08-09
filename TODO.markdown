@@ -11,8 +11,7 @@ Features
 
 Bug Fixes
 ---------
-* Remove RYM scraper until they have their own API.
-* Handle Unicode characters in artist and album names.
+* Error logging for bugs.
 
 Front-Endy Stuff
 ----------------
