@@ -68,7 +68,8 @@ def band_info(artist):
             # has this artist on their list.
             entry = models.ArtistEntry(name=info.artist, 
                                        album=info.album, 
-                                       id=g.user.id)
+                                       id=g.user.id,
+                                       active=True)
             db.session.add(entry)
             db.session.commit()
     except last_fm.ArtistNotFoundException:
@@ -93,7 +94,8 @@ def my_bands():
         flash('Sorry, but you must be logged in to keep a band to-do list.')
         return render_template('hello.html')
     bands = models.ArtistEntry.query.filter(
-            models.ArtistEntry.id == g.user.id).all()
+            models.ArtistEntry.id == g.user.id, 
+            models.ArtistEntry.active).all()
     msgs = [ '{} - {}'.format(b.name, b.album) for b in bands ]
     for m in msgs:
         flash(m)
@@ -108,6 +110,7 @@ def update_band_list(artists):
     
     User must be logged in.
     """
+    # models.ArtistEntry.
     pass
 
 
