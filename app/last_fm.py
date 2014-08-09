@@ -11,10 +11,24 @@ ArtistInfo = namedtuple('ArtistInfo', ['artist', 'album'])
 
 
 class ArtistNotFoundException(Exception):
+    """
+    Exception raised to signal that no results for the artist were 
+    returned from Last.fm's API.
+    """
     pass
 
 
 def get_best_album(artist):
+    """
+    Gets artist's best album, according to the Last.fm API. 
+    Returns a namedtuple with 'album' and 'name' (of the artist) fields.
+    ArtistNotFoundException is raised if the API returns no results.
+
+    Function works by calling the API's Artist.getTopAlbums method and 
+    returning the first result.
+
+    artist -- artist whose best album should be returned.
+    """
     s = requests.Session()
     s.params = { 'api_key' : AS_API_KEY, 
                  'format' : 'json', 

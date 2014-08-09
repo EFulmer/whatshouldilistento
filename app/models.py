@@ -32,6 +32,11 @@ class User(db.Model):
 
 # TODO properly implement many-to-many
 class ArtistEntry(db.Model):
+    """
+    An entry for an artist on a user's to-listen list.
+
+    One record per user-artist pair.
+    """
     __tablename__ = 'ArtistEntry' # could do __tablename__ = __name__ instead
 
     name  = db.Column(db.String(64), primary_key=True)
