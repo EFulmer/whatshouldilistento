@@ -65,10 +65,13 @@ def band_info(artist):
 
 
 @app.route('/my_bands', methods=('GET',))
+@login_required
 def my_bands():
     if g.user is None:
         flash('Sorry, but you must be logged in to keep a band to-do list.')
         return render_template('hello.html')
+    bands = models.ArtistEntry.query.filter(models.ArtistEntry.id == g.user.id).all()
+    return render_template('my_bands.html')
 
 
 @app.route('/login', methods=['GET','POST'])
@@ -104,8 +107,7 @@ def after_login(resp):
         nickname = resp.nickname
         if nickname is None or nickname == '':
             nickname = resp.email.split('@')[0]
-        user = models.User(nickname=nickname, email=resp.email) #, 
-                # role=ROLE_USER)
+        user = models.User(nickname=nickname, email=resp.email)
         db.session.add(user)
         db.session.commit()
         remember_me = False
